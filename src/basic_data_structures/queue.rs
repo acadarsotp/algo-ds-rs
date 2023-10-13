@@ -274,7 +274,7 @@ mod tests {
         assert_eq!(iter2.next(), None);
 
         //Does not panic
-        queue.enqueue(1);
+        queue.enqueue(1).expect("should not panic");
     }
 
     #[test]
