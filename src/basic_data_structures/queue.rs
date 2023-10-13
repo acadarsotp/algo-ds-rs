@@ -129,7 +129,7 @@ mod tests {
 
     #[test]
     fn test_create_queue() {
-        let mut queue: Queue<i32> = Queue::new(5);
+        let queue: Queue<i32> = Queue::new(5);
         assert_eq!(queue.cap, 5);
         assert_eq!(queue.data.len(), 0);
     }
@@ -141,6 +141,21 @@ mod tests {
             data: vec![],
         };
         assert!(queue.is_empty());
+    }
+
+    #[test]
+    fn test_check_full_queue() {
+        let queue_a: Queue<i32> = Queue {
+            cap: 5,
+            data: vec![],
+        };
+        assert!(!queue_a.is_full());
+
+        let queue_b: Queue<i32> = Queue {
+            cap: 5,
+            data: vec![1, 1, 1, 1, 1],
+        };
+        assert!(queue_b.is_full());
     }
 
     #[test]
@@ -258,7 +273,7 @@ mod tests {
             data: vec![1, 2, 3],
         };
 
-        let mut iter = queue.iter_mut();
+        let iter = queue.iter_mut();
 
         //Modify the original stack from iter_mut
         for x in iter {
@@ -279,7 +294,7 @@ mod tests {
 
     #[test]
     fn test_into_iter_queue() {
-        let mut queue: Queue<i32> = Queue {
+        let queue: Queue<i32> = Queue {
             cap: 10,
             data: vec![1, 2, 3],
         };

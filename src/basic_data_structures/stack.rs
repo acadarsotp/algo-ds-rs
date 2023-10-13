@@ -234,7 +234,7 @@ mod tests {
             data: vec![1, 2, 3],
         };
 
-        let mut iter = stack.iter_mut();
+        let iter = stack.iter_mut();
 
         //Modify the original stack from iter_mut
         for x in iter {
@@ -255,7 +255,7 @@ mod tests {
 
     #[test]
     fn test_into_iter_stack() {
-        let mut stack: Stack<i32> = Stack {
+        let stack: Stack<i32> = Stack {
             size: 3,
             data: vec![1, 2, 3],
         };
