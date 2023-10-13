@@ -1,5 +1,4 @@
 
-
 #[derive(Debug)]
 struct Stack<T> {
     size: usize,
@@ -58,9 +57,31 @@ impl<T> Stack<T> {
             _ => self.data.last_mut(),
         }
     }
+
+    fn get_data(&self) -> &Vec<T> {
+        &self.data
+    }
+
+    fn get_size(&self) -> &usize {
+        &self.size
+    }
 }
 
 //Implement iterator trait
+
+impl<T> Iterator for Stack<T> {
+    type Item = T;
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.size {
+            0 => None,
+            _ => {
+                self.size -= 1;
+                self.data.pop()
+            }
+        }
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -141,5 +162,42 @@ mod tests {
 
         let mut stack_b: Stack<i32> = Stack::new();
         assert_eq!(stack_b.peek_mut(), None);
+    }
+
+    #[test]
+    fn test_iter_from_stack() {
+        let mut stack: Stack<i32> = Stack {
+            size: 3,
+            data: vec![1, 2, 3],
+        };
+
+        assert_eq!(stack.next(), Some(3));
+        assert_eq!(stack.next(), Some(2));
+        assert_eq!(stack.next(), Some(1));
+        assert_eq!(stack.next(), None);
+    }
+
+    #[test]
+    fn test_stack_data() {
+        let stack: Stack<i32> = Stack {
+            size: 3,
+            data: vec![1, 2, 3],
+        };
+
+        let v = stack.get_data();
+
+        assert_eq!(v[0], 1);
+        assert_eq!(v[1], 2);
+        assert_eq!(v[2], 3);
+    }
+
+    #[test]
+    fn test_get_stack_size() {
+        let stack: Stack<i32> = Stack {
+            size: 3,
+            data: vec![1, 2, 3],
+        };
+
+        assert_eq!(stack.get_size(), &3)
     }
 }
