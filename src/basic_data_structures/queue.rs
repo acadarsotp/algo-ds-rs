@@ -292,6 +292,6 @@ mod tests {
         assert_eq!(iter.next(), None);
 
         //Panics because into_iter consumes the stack
-        //stack.push(1);
+        //queue.enqueue(1);
     }
 }
