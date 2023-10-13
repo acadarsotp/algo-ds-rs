@@ -31,12 +31,12 @@ impl<T> Stack<T> {
     }
 
     //Pop from the stack
-    fn pop(&mut self) {
+    fn pop(&mut self) -> Option<T> {
         match self.size {
-            0 => (),
+            0 => None,
             _ => {
-                self.data.pop();
                 self.size -= 1;
+                self.data.pop()
             }
         }
     }
@@ -49,39 +49,68 @@ impl<T> Stack<T> {
         }
     }
 
-    //Get mut ref to top value
-    fn peek_mut(&mut self) -> Option<&mut T> {
-        match self.size {
-            0 => None,
-            _ => self.data.last_mut(),
-        }
-    }
-
-    //Get & reference to stack data
-    fn get_data(&self) -> &Vec<T> {
-        &self.data
-    }
-
-    //Get & reference to stack size
     fn get_size(&self) -> &usize {
         &self.size
     }
+
+    // Implementation of iterations for a stack
+    // into_iter(): stack modified and became a iterator
+    // iter(): stack unmodified and get a immutable iterator
+    // iter_mut(): stack unmodified and get a mutable iterator
+    fn into_iter(self) -> IntoIter<T> {
+        IntoIter(self)
+    }
+
+    fn iter(&self) -> Iter<T> {
+        let mut iterator = Iter { stack: Vec::new() };
+        for item in self.data.iter() {
+            iterator.stack.push(item);
+        }
+        iterator
+    }
+
+    fn iter_mut(&mut self) -> IterMut<T> {
+        let mut iterator = IterMut { stack: Vec::new() };
+        for item in self.data.iter_mut() {
+            iterator.stack.push(item);
+        }
+        iterator
+    }
 }
 
-//Implement iterator trait
-impl<T> Iterator for Stack<T> {
+// Implementation of 3 iterations
+struct IntoIter<T>(Stack<T>);
+impl<T: Clone> Iterator for IntoIter<T> {
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
-        match self.size {
-            0 => None,
-            _ => {
-                self.size -= 1;
-                self.data.pop()
-            }
+        if !self.0.is_empty() {
+            self.0.size -= 1;
+            self.0.data.pop()
+        } else {
+            None
         }
     }
 }
 
+struct Iter<'a, T: 'a> {
+    stack: Vec<&'a T>,
+}
+impl<'a, T> Iterator for Iter<'a, T> {
+    type Item = &'a T;
+    fn next(&mut self) -> Option<Self::Item> {
+        self.stack.pop()
+    }
+}
+
+struct IterMut<'a, T: 'a> {
+    stack: Vec<&'a mut T>,
+}
+impl<'a, T> Iterator for IterMut<'a, T> {
+    type Item = &'a mut T;
+    fn next(&mut self) -> Option<Self::Item> {
+        self.stack.pop()
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -153,45 +182,6 @@ mod tests {
     }
 
     #[test]
-    fn test_peek_mut_from_stack() {
-        let mut stack_a: Stack<i32> = Stack {
-            size: 3,
-            data: vec![1, 2, 3],
-        };
-        assert_eq!(stack_a.peek_mut(), Some(&mut 3));
-
-        let mut stack_b: Stack<i32> = Stack::new();
-        assert_eq!(stack_b.peek_mut(), None);
-    }
-
-    #[test]
-    fn test_iter_from_stack() {
-        let mut stack: Stack<i32> = Stack {
-            size: 3,
-            data: vec![1, 2, 3],
-        };
-
-        assert_eq!(stack.next(), Some(3));
-        assert_eq!(stack.next(), Some(2));
-        assert_eq!(stack.next(), Some(1));
-        assert_eq!(stack.next(), None);
-    }
-
-    #[test]
-    fn test_stack_data() {
-        let stack: Stack<i32> = Stack {
-            size: 3,
-            data: vec![1, 2, 3],
-        };
-
-        let v = stack.get_data();
-
-        assert_eq!(v[0], 1);
-        assert_eq!(v[1], 2);
-        assert_eq!(v[2], 3);
-    }
-
-    #[test]
     fn test_get_stack_size() {
         let stack: Stack<i32> = Stack {
             size: 3,
@@ -199,5 +189,85 @@ mod tests {
         };
 
         assert_eq!(stack.get_size(), &3)
+    }
+
+    #[test]
+    fn test_iter_stack() {
+        let mut stack: Stack<i32> = Stack {
+            size: 3,
+            data: vec![1, 2, 3],
+        };
+
+        let mut iter = stack.iter();
+
+        assert_eq!(iter.next(), Some(&3));
+        assert_eq!(iter.next(), Some(&2));
+        assert_eq!(iter.next(), Some(&1));
+        assert_eq!(iter.next(), None);
+
+        //Does not panic
+        stack.push(1);
+    }
+
+    #[test]
+    fn test_iter_mut_stack() {
+        let mut stack: Stack<i32> = Stack {
+            size: 3,
+            data: vec![1, 2, 3],
+        };
+
+        let mut iter = stack.iter_mut();
+
+        assert_eq!(iter.next(), Some(&mut 3));
+        assert_eq!(iter.next(), Some(&mut 2));
+        assert_eq!(iter.next(), Some(&mut 1));
+        assert_eq!(iter.next(), None);
+
+        //Does not panic
+        stack.push(1);
+    }
+
+    #[test]
+    fn test_iter_mut_stack_2() {
+        let mut stack: Stack<i32> = Stack {
+            size: 3,
+            data: vec![1, 2, 3],
+        };
+
+        let mut iter = stack.iter_mut();
+
+        //Modify the original stack from iter_mut
+        for x in iter {
+            *x *= 2;
+        }
+
+        let mut iter2 = stack.iter_mut();
+
+        //Check if original stack has been modified in intended manner
+        assert_eq!(iter2.next(), Some(&mut 6));
+        assert_eq!(iter2.next(), Some(&mut 4));
+        assert_eq!(iter2.next(), Some(&mut 2));
+        assert_eq!(iter2.next(), None);
+
+        //Does not panic
+        stack.push(1);
+    }
+
+    #[test]
+    fn test_into_iter_stack() {
+        let mut stack: Stack<i32> = Stack {
+            size: 3,
+            data: vec![1, 2, 3],
+        };
+
+        let mut iter = stack.into_iter();
+
+        assert_eq!(iter.next(), Some(3));
+        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.next(), None);
+
+        //Panics because into_iter consumes the stack
+        //stack.push(1);
     }
 }
