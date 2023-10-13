@@ -58,17 +58,18 @@ impl<T> Stack<T> {
         }
     }
 
+    //Get & reference to stack data
     fn get_data(&self) -> &Vec<T> {
         &self.data
     }
 
+    //Get & reference to stack size
     fn get_size(&self) -> &usize {
         &self.size
     }
 }
 
 //Implement iterator trait
-
 impl<T> Iterator for Stack<T> {
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
