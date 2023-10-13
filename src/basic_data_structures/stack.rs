@@ -1,4 +1,3 @@
-
 #[derive(Debug)]
 struct Stack<T> {
     size: usize,
