@@ -275,14 +275,14 @@ mod tests {
 
         let iter = queue.iter_mut();
 
-        //Modify the original stack from iter_mut
+        //Modify the original queue from iter_mut
         for x in iter {
             *x *= 2;
         }
 
         let mut iter2 = queue.iter_mut();
 
-        //Check if original stack has been modified in intended manner
+        //Check if original queue has been modified in intended manner
         assert_eq!(iter2.next(), Some(&mut 2));
         assert_eq!(iter2.next(), Some(&mut 4));
         assert_eq!(iter2.next(), Some(&mut 6));
@@ -306,7 +306,7 @@ mod tests {
         assert_eq!(iter.next(), Some(3));
         assert_eq!(iter.next(), None);
 
-        //Panics because into_iter consumes the stack
+        //Panics because into_iter consumes the queue
         //queue.enqueue(1);
     }
 }
