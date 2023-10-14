@@ -1,12 +1,12 @@
 #[derive(Debug)]
-struct Stack<T> {
+pub struct Stack<T> {
     size: usize,
     data: Vec<T>,
 }
 
 impl<T> Stack<T> {
     //Constructor
-    fn new() -> Self {
+    pub fn new() -> Self {
         Stack {
             size: 0,
             data: Vec::new(),
@@ -14,24 +14,24 @@ impl<T> Stack<T> {
     }
 
     //Check empty
-    fn is_empty(&self) -> bool {
+    pub fn is_empty(&self) -> bool {
         self.size == 0
     }
 
     //Clear the stack
-    fn clear(&mut self) {
+    pub fn clear(&mut self) {
         self.size = 0;
         self.data.clear();
     }
 
     //Push to the stack
-    fn push(&mut self, val: T) {
+    pub fn push(&mut self, val: T) {
         self.data.push(val);
         self.size += 1;
     }
 
     //Pop from the stack
-    fn pop(&mut self) -> Option<T> {
+    pub fn pop(&mut self) -> Option<T> {
         match self.size {
             0 => None,
             _ => {
@@ -42,14 +42,14 @@ impl<T> Stack<T> {
     }
 
     //Get ref to top value
-    fn peek(&self) -> Option<&T> {
+    pub fn peek(&self) -> Option<&T> {
         match self.size {
             0 => None,
             _ => self.data.last(),
         }
     }
 
-    fn get_size(&self) -> &usize {
+    pub fn get_size(&self) -> &usize {
         &self.size
     }
 
@@ -57,11 +57,11 @@ impl<T> Stack<T> {
     // into_iter(): stack modified and became a iterator
     // iter(): stack unmodified and get a immutable iterator
     // iter_mut(): stack unmodified and get a mutable iterator
-    fn into_iter(self) -> IntoIter<T> {
+    pub fn into_iter(self) -> IntoIter<T> {
         IntoIter(self)
     }
 
-    fn iter(&self) -> Iter<T> {
+    pub fn iter(&self) -> Iter<T> {
         let mut iterator = Iter { stack: Vec::new() };
         for item in self.data.iter() {
             iterator.stack.push(item);
@@ -69,7 +69,7 @@ impl<T> Stack<T> {
         iterator
     }
 
-    fn iter_mut(&mut self) -> IterMut<T> {
+    pub fn iter_mut(&mut self) -> IterMut<T> {
         let mut iterator = IterMut { stack: Vec::new() };
         for item in self.data.iter_mut() {
             iterator.stack.push(item);

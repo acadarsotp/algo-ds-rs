@@ -1,12 +1,12 @@
 #[derive(Debug)]
-struct Deque<T> {
+pub struct Deque<T> {
     cap: usize,
     data: Vec<T>,
 }
 
 impl<T> Deque<T> {
     //Constructor
-    fn new(size: usize) -> Self {
+    pub fn new(size: usize) -> Self {
         Self {
             cap: size,
             data: Vec::with_capacity(size),
@@ -14,34 +14,36 @@ impl<T> Deque<T> {
     }
 
     //Check empty
-    fn is_empty(&self) -> bool {
+    pub fn is_empty(&self) -> bool {
         0 == self.len()
     }
 
     //Check full
-    fn is_full(&self) -> bool {
+    pub fn is_full(&self) -> bool {
         self.len() == self.cap
     }
 
     //Check length
-    fn len(&self) -> usize {
+    pub fn len(&self) -> usize {
         self.data.len()
     }
 
-    //Clear Queue
-    fn clear(&mut self) {
+    //Clear deque
+    pub fn clear(&mut self) {
         self.data = Vec::with_capacity(self.cap);
     }
 
-    //Insert element
-    fn add_front(&mut self, val: T) -> Result<(), &str> {
+    //Push to the front
+    pub fn add_front(&mut self, val: T) -> Result<(), &str> {
         if self.len() == self.cap {
             return Err("No space available");
         }
         self.data.push(val);
         Ok(())
     }
-    fn add_rear(&mut self, val: T) -> Result<(), &str> {
+
+    //Push to the rear
+    pub fn add_rear(&mut self, val: T) -> Result<(), &str> {
         if self.len() == self.cap {
             return Err("No space available");
         }
@@ -49,15 +51,17 @@ impl<T> Deque<T> {
         Ok(())
     }
 
-    //Pop out values
-    fn remove_front(&mut self) -> Option<T> {
+    //Pop from the front
+    pub fn remove_front(&mut self) -> Option<T> {
         if self.len() > 0 {
             self.data.pop()
         } else {
             None
         }
     }
-    fn remove_rear(&mut self) -> Option<T> {
+
+    //Pop from the rear
+    pub fn remove_rear(&mut self) -> Option<T> {
         if self.len() > 0 {
             Some(self.data.remove(0))
         } else {
@@ -66,10 +70,10 @@ impl<T> Deque<T> {
     }
 
     //Peek Queue
-    fn peek_front(&self) -> Option<&T> {
+    pub fn peek_front(&self) -> Option<&T> {
         self.data.last()
     }
-    fn peek_rear(&self) -> Option<&T> {
+    pub fn peek_rear(&self) -> Option<&T> {
         self.data.first()
     }
 
@@ -77,11 +81,11 @@ impl<T> Deque<T> {
     // into_iter(): deque modified and became a iterator
     // iter(): deque unmodified and get a immutable iterator
     // iter_mut(): deque unmodified and get a mutable iterator
-    fn into_iter(self) -> IntoIter<T> {
+    pub fn into_iter(self) -> IntoIter<T> {
         IntoIter(self)
     }
 
-    fn iter(&self) -> Iter<T> {
+    pub fn iter(&self) -> Iter<T> {
         let mut iterator = Iter { stack: Vec::new() };
         for item in self.data.iter() {
             iterator.stack.push(item);
@@ -89,7 +93,7 @@ impl<T> Deque<T> {
         iterator
     }
 
-    fn iter_mut(&mut self) -> IterMut<T> {
+    pub fn iter_mut(&mut self) -> IterMut<T> {
         let mut iterator = IterMut { stack: Vec::new() };
         for item in self.data.iter_mut() {
             iterator.stack.push(item);

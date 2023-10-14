@@ -1,12 +1,12 @@
 #[derive(Debug)]
-struct Queue<T> {
+pub struct Queue<T> {
     cap: usize,
     data: Vec<T>,
 }
 
 impl<T> Queue<T> {
     //Constructor
-    fn new(size: usize) -> Self {
+    pub fn new(size: usize) -> Self {
         Self {
             cap: size,
             data: Vec::with_capacity(size),
@@ -14,27 +14,27 @@ impl<T> Queue<T> {
     }
 
     //Check empty
-    fn is_empty(&self) -> bool {
+    pub fn is_empty(&self) -> bool {
         0 == self.len()
     }
 
     //Check full
-    fn is_full(&self) -> bool {
+    pub fn is_full(&self) -> bool {
         self.len() == self.cap
     }
 
     //Check length
-    fn len(&self) -> usize {
+    pub fn len(&self) -> usize {
         self.data.len()
     }
 
     //Clear Queue
-    fn clear(&mut self) {
+    pub fn clear(&mut self) {
         self.data = Vec::with_capacity(self.cap);
     }
 
     //Insert element
-    fn enqueue(&mut self, val: T) -> Result<(), &str> {
+    pub fn enqueue(&mut self, val: T) -> Result<(), &str> {
         if self.len() == self.cap {
             return Err("No space available");
         }
@@ -43,7 +43,7 @@ impl<T> Queue<T> {
     }
 
     //Pop out values
-    fn dequeue(&mut self) -> Option<T> {
+    pub fn dequeue(&mut self) -> Option<T> {
         if self.len() > 0 {
             self.data.pop()
         } else {
@@ -52,7 +52,7 @@ impl<T> Queue<T> {
     }
 
     //Peek Queue
-    fn peek(&self) -> Option<&T> {
+    pub fn peek(&self) -> Option<&T> {
         self.data.last()
     }
 
@@ -60,11 +60,11 @@ impl<T> Queue<T> {
     // into_iter(): queue modified and became a iterator
     // iter(): queue unmodified and get a immutable iterator
     // iter_mut(): queue unmodified and get a mutable iterator
-    fn into_iter(self) -> IntoIter<T> {
+    pub fn into_iter(self) -> IntoIter<T> {
         IntoIter(self)
     }
 
-    fn iter(&self) -> Iter<T> {
+    pub fn iter(&self) -> Iter<T> {
         let mut iterator = Iter { stack: Vec::new() };
         for item in self.data.iter() {
             iterator.stack.push(item);
@@ -72,7 +72,7 @@ impl<T> Queue<T> {
         iterator
     }
 
-    fn iter_mut(&mut self) -> IterMut<T> {
+    pub fn iter_mut(&mut self) -> IterMut<T> {
         let mut iterator = IterMut { stack: Vec::new() };
         for item in self.data.iter_mut() {
             iterator.stack.push(item);

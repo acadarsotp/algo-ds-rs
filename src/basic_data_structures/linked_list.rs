@@ -1,33 +1,37 @@
 type Link<T> = Option<Box<Node<T>>>;
 
-struct List<T> {
+pub struct List<T> {
     size: usize,
     head: Link<T>,
 }
 
 #[derive(PartialEq, Debug)]
-struct Node<T> {
+pub struct Node<T> {
     element: T,
     next: Link<T>,
 }
 
 impl<T: PartialEq> List<T> {
-    fn new() -> Self {
+    //Constructor
+    pub fn new() -> Self {
         Self {
             size: 0,
             head: None,
         }
     }
 
-    fn is_empty(&self) -> bool {
+    //Check empty
+    pub fn is_empty(&self) -> bool {
         0 == self.size
     }
 
-    fn len(&self) -> usize {
+    //Check len
+    pub fn len(&self) -> usize {
         self.size
     }
 
-    fn push(&mut self, element: T) {
+    //Push to head
+    pub fn push(&mut self, element: T) {
         let node = Box::new(Node {
             element,
             next: self.head.take(),
@@ -36,7 +40,8 @@ impl<T: PartialEq> List<T> {
         self.size += 1;
     }
 
-    fn insert_at(&mut self, index: usize, element: T) -> Result<(), &str> {
+    //Insert node at chosen index
+    pub fn insert_at(&mut self, index: usize, element: T) -> Result<(), &str> {
         if index == 0 {
             self.push(element);
             return Ok(());
@@ -58,7 +63,8 @@ impl<T: PartialEq> List<T> {
         Ok(())
     }
 
-    fn pop(&mut self) -> Option<T> {
+    //Pop from head
+    pub fn pop(&mut self) -> Option<T> {
         self.head.take().map(|node| {
             self.head = node.next;
             self.size -= 1;
@@ -66,7 +72,8 @@ impl<T: PartialEq> List<T> {
         })
     }
 
-    fn delete_at(&mut self, index: usize) -> Result<Option<T>, &str> {
+    //Delete node from chosen index
+     pub fn delete_at(&mut self, index: usize) -> Result<Option<T>, &str> {
         if index == 0 {
             return Ok(self.pop());
         }
@@ -87,11 +94,13 @@ impl<T: PartialEq> List<T> {
         }
     }
 
-    fn peek(&self) -> Option<&T> {
+    //Immutable peek at head
+    pub fn peek(&self) -> Option<&T> {
         self.head.as_ref().map(|node| &node.element)
     }
 
-    fn peek_mut(&mut self) -> Option<&mut T> {
+    //Mutable peek at head
+    pub fn peek_mut(&mut self) -> Option<&mut T> {
         self.head.as_mut().map(|node| &mut node.element)
     }
 
@@ -100,24 +109,24 @@ impl<T: PartialEq> List<T> {
     // iter: returns an immutable iterator without modifying the linked list
     // iter_mut: returns a mutable iterator without modifying the linked list
 
-    fn into_iter(self) -> IntoIter<T> {
+    pub fn into_iter(self) -> IntoIter<T> {
         IntoIter(self)
     }
 
-    fn iter(&self) -> Iter<T> {
+    pub fn iter(&self) -> Iter<T> {
         Iter {
             next: self.head.as_deref(),
         }
     }
 
-    fn iter_mut(&mut self) -> IterMut<T> {
+    pub fn iter_mut(&mut self) -> IterMut<T> {
         IterMut {
             next: self.head.as_deref_mut(),
         }
     }
 
     //Find element using iterator
-    fn find(&self, element: T) -> Option<Vec<usize>> {
+    pub fn find(&self, element: T) -> Option<Vec<usize>> {
         let found_indices: Vec<usize> = self
             .iter()
             .enumerate()
