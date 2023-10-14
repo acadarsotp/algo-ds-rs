@@ -242,6 +242,7 @@ mod tests {
         assert_eq!(deque_b.data, vec![]);
     }
 
+    #[test]
     fn test_remove_rear_deque() {
         let mut deque_a: Deque<i32> = Deque {
             cap: 5,

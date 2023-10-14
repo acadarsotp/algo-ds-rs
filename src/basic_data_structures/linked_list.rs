@@ -210,6 +210,18 @@ mod tests {
     }
 
     #[test]
+    fn test_peek_list() {
+        let mut list: List<i32> = List::new();
+        assert_eq!(list.peek_mut(), None);
+
+        list.push(2);
+        list.push(5);
+
+        assert_eq!(list.peek_mut(), Some(&mut 2));
+        assert_eq!(list.peek(), Some(&2));
+    }
+
+    #[test]
     fn test_push_iter_pop_list() {
         let mut list: List<i32> = List::new();
         list.push(2);
@@ -229,10 +241,11 @@ mod tests {
         list.push(10);
 
         assert_eq!(list.iter().collect::<Vec<_>>(), vec![&10, &5, &2]);
-        list.insert_at(2, 60);
+        let _ = list.insert_at(2, 60);
         assert_eq!(list.iter().collect::<Vec<_>>(), vec![&10, &5, &60, &2]);
     }
 
+    #[test]
     fn test_delete_at_list() {
         let mut list: List<i32> = List::new();
         list.push(2);
@@ -240,10 +253,11 @@ mod tests {
         list.push(10);
 
         assert_eq!(list.iter().collect::<Vec<_>>(), vec![&10, &5, &2]);
-        list.delete_at(2);
+        let _ = list.delete_at(2);
         assert_eq!(list.iter().collect::<Vec<_>>(), vec![&10, &5]);
     }
 
+    #[test]
     fn test_find_at_list() {
         let mut list_a: List<i32> = List::new();
 
@@ -264,6 +278,7 @@ mod tests {
         assert_eq!(list_b.find(563), Some(vec![0,2]));
     }
 
+    #[test]
     fn test_iter_mut_list() {
         let mut list: List<i32> = List::new();
         list.push(2);
@@ -282,6 +297,7 @@ mod tests {
         assert_eq!(list.iter().collect::<Vec<_>>(), vec![&20, &10, &4]);
     }
 
+    #[test]
     fn test_into_iter_list() {
         let mut list: List<i32> = List::new();
         list.push(2);
