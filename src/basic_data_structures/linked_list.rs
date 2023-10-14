@@ -11,7 +11,7 @@ struct Node<T> {
     next: Link<T>,
 }
 
-impl<T> List<T> {
+impl<T: PartialEq> List<T> {
     fn new() -> Self {
         Self {
             size: 0,
@@ -36,12 +36,54 @@ impl<T> List<T> {
         self.size += 1;
     }
 
+    fn insert_at(&mut self, index: usize, element: T) {
+        if index == 0 {
+            self.push(element);
+            return;
+        }
+        let mut target = &mut self.head;
+        for _ in 0..index {
+            if let Some(node) = target {
+                target = &mut node.next;
+            } else {
+                panic!("Index out of bounds");
+            }
+        }
+        let new_node = Box::new(Node {
+            element,
+            next: target.take(),
+        });
+        *target = Some(new_node);
+        self.size += 1;
+    }
+
     fn pop(&mut self) -> Option<T> {
         self.head.take().map(|node| {
             self.head = node.next;
             self.size -= 1;
             node.element
         })
+    }
+
+    fn delete_at(&mut self, index: usize) -> Option<T> {
+        if index == 0 {
+            return self.pop();
+        }
+        let mut target = &mut self.head;
+        for _ in 0..index - 1 {
+            if let Some(node) = target {
+                target = &mut node.next;
+            } else {
+                panic!("Index out of bounds");
+            }
+        }
+        if let Some(node) = target.take() {
+            *target = node.next;
+            self.size -= 1;
+            Some(node.element)
+        } else {
+            None
+        }
     }
 
     fn peek(&self) -> Option<&T> {
@@ -72,11 +114,26 @@ impl<T> List<T> {
             next: self.head.as_deref_mut(),
         }
     }
+
+    //Find element using iterator
+    fn find(&self, element: T) -> Option<Vec<usize>> {
+        let found_indices: Vec<usize> = self
+            .iter()
+            .enumerate()
+            .filter(|&(_, item)| *item == element)
+            .map(|(index, _)| index)
+            .collect();
+
+        match found_indices.len() {
+            0 => None,
+            _ => Some(found_indices),
+        }
+    }
 }
 
 //Implementation of 3 iterators
 struct IntoIter<T>(List<T>);
-impl<T> Iterator for IntoIter<T> {
+impl<T: PartialEq> Iterator for IntoIter<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -163,18 +220,76 @@ mod tests {
         assert_eq!(list.iter().collect::<Vec<_>>(), vec![&5, &2]);
     }
 
+    #[test]
+    fn test_insert_at_list() {
+        let mut list: List<i32> = List::new();
+        list.push(2);
+        list.push(5);
+        list.push(10);
+
+        assert_eq!(list.iter().collect::<Vec<_>>(), vec![&10, &5, &2]);
+        list.insert_at(2, 60);
+        assert_eq!(list.iter().collect::<Vec<_>>(), vec![&10, &5, &60, &2]);
+    }
+
+    fn test_delete_at_list() {
+        let mut list: List<i32> = List::new();
+        list.push(2);
+        list.push(5);
+        list.push(10);
+
+        assert_eq!(list.iter().collect::<Vec<_>>(), vec![&10, &5, &2]);
+        list.delete_at(2);
+        assert_eq!(list.iter().collect::<Vec<_>>(), vec![&10, &5]);
+    }
+
+    fn test_find_at_list() {
+        let mut list_a: List<i32> = List::new();
+
+        let mut counter = 0;
+        for _ in 0..=1000 {
+            list_a.push(counter);
+            counter += 1;
+        }
+
+        assert_eq!(list_a.find(563), Some(vec![563]));
+
+        let mut list_b: List<i32> = List::new();
+        list_b.push(3);
+        list_b.push(12);
+        list_b.push(3);
+        list_b.push(54);
+
+        assert_eq!(list_b.find(563), Some(vec![0,2]));
+    }
+
     fn test_iter_mut_list() {
         let mut list: List<i32> = List::new();
         list.push(2);
         list.push(5);
         list.push(10);
 
-        assert_eq!(list.iter_mut().collect::<Vec<_>>(), vec![&mut 10, &mut 5, &mut 2]);
+        assert_eq!(
+            list.iter_mut().collect::<Vec<_>>(),
+            vec![&mut 10, &mut 5, &mut 2]
+        );
 
         for x in list.iter_mut() {
             *x *= 2;
         }
 
         assert_eq!(list.iter().collect::<Vec<_>>(), vec![&20, &10, &4]);
+    }
+
+    fn test_into_iter_list() {
+        let mut list: List<i32> = List::new();
+        list.push(2);
+        list.push(5);
+        list.push(10);
+
+        assert_eq!(list.into_iter().collect::<Vec<_>>(), vec![20, 10, 4]);
+
+        //Panics because list is consumed by iterator
+        //list.push(1);
     }
 }
