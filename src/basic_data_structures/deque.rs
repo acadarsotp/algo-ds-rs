@@ -1,10 +1,10 @@
 #[derive(Debug)]
-struct Queue<T> {
+struct Deque<T> {
     cap: usize,
     data: Vec<T>,
 }
 
-impl<T> Queue<T> {
+impl<T> Deque<T> {
     //Constructor
     fn new(size: usize) -> Self {
         Self {
@@ -34,7 +34,14 @@ impl<T> Queue<T> {
     }
 
     //Insert element
-    fn enqueue(&mut self, val: T) -> Result<(), &str> {
+    fn add_front(&mut self, val: T) -> Result<(), &str> {
+        if self.len() == self.cap {
+            return Err("No space available");
+        }
+        self.data.push(val);
+        Ok(())
+    }
+    fn add_rear(&mut self, val: T) -> Result<(), &str> {
         if self.len() == self.cap {
             return Err("No space available");
         }
@@ -43,17 +50,27 @@ impl<T> Queue<T> {
     }
 
     //Pop out values
-    fn dequeue(&mut self) -> Option<T> {
+    fn remove_front(&mut self) -> Option<T> {
         if self.len() > 0 {
             self.data.pop()
         } else {
             None
         }
     }
+    fn remove_rear(&mut self) -> Option<T> {
+        if self.len() > 0 {
+            Some(self.data.remove(0))
+        } else {
+            None
+        }
+    }
 
     //Peek Queue
-    fn peek(&self) -> Option<&T> {
+    fn peek_front(&self) -> Option<&T> {
         self.data.last()
+    }
+    fn peek_rear(&self) -> Option<&T> {
+        self.data.first()
     }
 
     // Implementation of iterations for a queue
@@ -82,7 +99,7 @@ impl<T> Queue<T> {
 }
 
 // Implementation of 3 iterations
-struct IntoIter<T>(Queue<T>);
+struct IntoIter<T>(Deque<T>);
 impl<T: Clone> Iterator for IntoIter<T> {
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
@@ -128,116 +145,167 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_create_queue() {
-        let queue: Queue<i32> = Queue::new(5);
-        assert_eq!(queue.cap, 5);
-        assert_eq!(queue.data.len(), 0);
+    fn test_create_deque() {
+        let deque: Deque<i32> = Deque::new(5);
+        assert_eq!(deque.cap, 5);
+        assert_eq!(deque.data.len(), 0);
     }
 
     #[test]
-    fn test_check_empty_queue() {
-        let queue: Queue<i32> = Queue {
+    fn test_check_empty_deque() {
+        let deque: Deque<i32> = Deque {
             cap: 5,
             data: vec![],
         };
-        assert!(queue.is_empty());
+        assert!(deque.is_empty());
     }
 
     #[test]
-    fn test_check_full_queue() {
-        let queue_a: Queue<i32> = Queue {
+    fn test_check_full_deque() {
+        let deque_a: Deque<i32> = Deque {
             cap: 5,
             data: vec![],
         };
-        assert!(!queue_a.is_full());
+        assert!(!deque_a.is_full());
 
-        let queue_b: Queue<i32> = Queue {
+        let deque_b: Deque<i32> = Deque {
             cap: 5,
             data: vec![1, 1, 1, 1, 1],
         };
-        assert!(queue_b.is_full());
+        assert!(deque_b.is_full());
     }
 
     #[test]
-    fn test_clear_queue() {
-        let mut queue: Queue<i32> = Queue {
+    fn test_clear_deque() {
+        let mut deque: Deque<i32> = Deque {
             cap: 3,
             data: vec![1, 2, 3],
         };
-        queue.clear();
-        assert!(queue.is_empty());
+        deque.clear();
+        assert!(deque.is_empty());
     }
 
     #[test]
-    fn test_enqueue() {
-        let mut queue_a: Queue<i32> = Queue {
-            cap: 10,
+    fn test_add_front_deque() {
+        let mut deque_a: Deque<i32> = Deque {
+            cap: 5,
             data: vec![1, 2, 3],
         };
-        queue_a.enqueue(4).expect("is not at full cap");
-        assert_eq!(queue_a.data, vec![4, 1, 2, 3]);
+        deque_a.add_front(4).expect("is not at full cap");
+        assert_eq!(deque_a.data, vec![1, 2, 3, 4]);
 
-        let mut queue_b: Queue<i32> = Queue {
+        let mut deque_b: Deque<i32> = Deque {
             cap: 3,
             data: vec![1, 2, 3],
         };
-        match queue_b.enqueue(4) {
+        match deque_b.add_front(4) {
             Ok(..) => (),
             Err(e) => eprintln!("{}", e),
         }
-        assert_eq!(queue_b.data.len(), 3);
+        assert_eq!(deque_b.data.len(), 3);
     }
 
     #[test]
-    fn test_dequeue() {
-        let mut queue_a: Queue<i32> = Queue {
+    fn test_add_rear_deque() {
+        let mut deque_a: Deque<i32> = Deque {
+            cap: 5,
+            data: vec![1, 2, 3],
+        };
+        deque_a.add_rear(4).expect("is not at full cap");
+        assert_eq!(deque_a.data, vec![4, 1, 2, 3]);
+
+        let mut deque_b: Deque<i32> = Deque {
             cap: 3,
             data: vec![1, 2, 3],
         };
-        queue_a.dequeue();
-        assert_eq!(queue_a.data, vec![1, 2]);
+        match deque_b.add_rear(4) {
+            Ok(..) => (),
+            Err(e) => eprintln!("{}", e),
+        }
+        assert_eq!(deque_b.data.len(), 3);
+    }
 
-        let mut queue_b: Queue<i32> = Queue {
+    #[test]
+    fn test_remove_front_deque() {
+        let mut deque_a: Deque<i32> = Deque {
+            cap: 5,
+            data: vec![1, 2, 3],
+        };
+        deque_a.remove_front();
+        assert_eq!(deque_a.data, vec![1, 2]);
+
+        let mut deque_b: Deque<i32> = Deque {
             cap: 5,
             data: vec![],
         };
-        queue_b.dequeue();
-        assert_eq!(queue_b.data, vec![]);
+        deque_b.remove_front();
+        assert_eq!(deque_b.data, vec![]);
+    }
+
+    fn test_remove_rear_deque() {
+        let mut deque_a: Deque<i32> = Deque {
+            cap: 5,
+            data: vec![1, 2, 3],
+        };
+        deque_a.remove_rear();
+        assert_eq!(deque_a.data, vec![2, 3]);
+
+        let mut deque_b: Deque<i32> = Deque {
+            cap: 5,
+            data: vec![],
+        };
+        deque_b.remove_rear();
+        assert_eq!(deque_b.data, vec![]);
     }
 
     #[test]
-    fn test_peek_queue() {
-        let queue_a: Queue<i32> = Queue {
-            cap: 3,
+    fn test_peek_front_deque() {
+        let deque_a: Deque<i32> = Deque {
+            cap: 5,
             data: vec![1, 2, 3],
         };
-        assert_eq!(queue_a.peek(), Some(&3));
+        assert_eq!(deque_a.peek_front(), Some(&3));
 
-        let queue_b: Queue<i32> = Queue {
+        let deque_b: Deque<i32> = Deque {
             cap: 2,
             data: vec![],
         };
-        assert_eq!(queue_b.peek(), None);
+        assert_eq!(deque_b.peek_front(), None);
     }
 
     #[test]
-    fn test_get_len_queue() {
-        let queue: Queue<i32> = Queue {
+    fn test_peek_rear_deque() {
+        let deque_a: Deque<i32> = Deque {
+            cap: 5,
+            data: vec![1, 2, 3],
+        };
+        assert_eq!(deque_a.peek_rear(), Some(&1));
+
+        let deque_b: Deque<i32> = Deque {
+            cap: 2,
+            data: vec![],
+        };
+        assert_eq!(deque_b.peek_rear(), None);
+    }
+
+    #[test]
+    fn test_get_len_deque() {
+        let deque: Deque<i32> = Deque {
             cap: 10,
             data: vec![1, 2, 3],
         };
 
-        assert_eq!(queue.len(), 3)
+        assert_eq!(deque.len(), 3)
     }
 
     #[test]
-    fn test_iter_queue() {
-        let mut queue: Queue<i32> = Queue {
+    fn test_iter_deque() {
+        let mut deque: Deque<i32> = Deque {
             cap: 10,
             data: vec![1, 2, 3],
         };
 
-        let mut iter = queue.iter();
+        let mut iter = deque.iter();
 
         assert_eq!(iter.next(), Some(&1));
         assert_eq!(iter.next(), Some(&2));
@@ -245,17 +313,17 @@ mod tests {
         assert_eq!(iter.next(), None);
 
         //Does not panic
-        queue.enqueue(1).expect("should not panic");
+        deque.add_front(1).expect("should not panic");
     }
 
     #[test]
-    fn test_iter_mut_queue() {
-        let mut queue: Queue<i32> = Queue {
+    fn test_iter_mut_deque() {
+        let mut deque: Deque<i32> = Deque {
             cap: 10,
             data: vec![1, 2, 3],
         };
 
-        let mut iter = queue.iter_mut();
+        let mut iter = deque.iter_mut();
 
         assert_eq!(iter.next(), Some(&mut 1));
         assert_eq!(iter.next(), Some(&mut 2));
@@ -263,24 +331,24 @@ mod tests {
         assert_eq!(iter.next(), None);
 
         //Does not panic
-        queue.enqueue(1).expect("should not panic");
+        deque.add_front(1).expect("should not panic");
     }
 
     #[test]
-    fn test_iter_mut_queue_2() {
-        let mut queue: Queue<i32> = Queue {
+    fn test_iter_mut_deque_2() {
+        let mut deque: Deque<i32> = Deque {
             cap: 10,
             data: vec![1, 2, 3],
         };
 
-        let iter = queue.iter_mut();
+        let iter = deque.iter_mut();
 
         //Modify the original queue from iter_mut
         for x in iter {
             *x *= 2;
         }
 
-        let mut iter2 = queue.iter_mut();
+        let mut iter2 = deque.iter_mut();
 
         //Check if original queue has been modified in intended manner
         assert_eq!(iter2.next(), Some(&mut 2));
@@ -289,17 +357,17 @@ mod tests {
         assert_eq!(iter2.next(), None);
 
         //Does not panic
-        queue.enqueue(1).expect("should not panic");
+        deque.add_front(1).expect("should not panic");
     }
 
     #[test]
-    fn test_into_iter_queue() {
-        let queue: Queue<i32> = Queue {
+    fn test_into_iter_deque() {
+        let deque: Deque<i32> = Deque {
             cap: 10,
             data: vec![1, 2, 3],
         };
 
-        let mut iter = queue.into_iter();
+        let mut iter = deque.into_iter();
 
         assert_eq!(iter.next(), Some(1));
         assert_eq!(iter.next(), Some(2));
@@ -307,6 +375,6 @@ mod tests {
         assert_eq!(iter.next(), None);
 
         //Panics because into_iter consumes the queue
-        //queue.enqueue(1);
+        //deque.add_front(1);
     }
 }
