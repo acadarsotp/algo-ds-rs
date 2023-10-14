@@ -73,10 +73,10 @@ impl<T> Deque<T> {
         self.data.first()
     }
 
-    // Implementation of iterations for a queue
-    // into_iter(): queue modified and became a iterator
-    // iter(): queue unmodified and get a immutable iterator
-    // iter_mut(): queue unmodified and get a mutable iterator
+    // Implementation of iterations for a deque
+    // into_iter(): deque modified and became a iterator
+    // iter(): deque unmodified and get a immutable iterator
+    // iter_mut(): deque unmodified and get a mutable iterator
     fn into_iter(self) -> IntoIter<T> {
         IntoIter(self)
     }
