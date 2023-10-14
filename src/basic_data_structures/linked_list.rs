@@ -36,17 +36,17 @@ impl<T: PartialEq> List<T> {
         self.size += 1;
     }
 
-    fn insert_at(&mut self, index: usize, element: T) {
+    fn insert_at(&mut self, index: usize, element: T) -> Result<(), &str> {
         if index == 0 {
             self.push(element);
-            return;
+            return Ok(());
         }
         let mut target = &mut self.head;
         for _ in 0..index {
             if let Some(node) = target {
                 target = &mut node.next;
             } else {
-                panic!("Index out of bounds");
+                return Err("Index out of bounds");
             }
         }
         let new_node = Box::new(Node {
@@ -55,6 +55,7 @@ impl<T: PartialEq> List<T> {
         });
         *target = Some(new_node);
         self.size += 1;
+        Ok(())
     }
 
     fn pop(&mut self) -> Option<T> {
@@ -65,24 +66,24 @@ impl<T: PartialEq> List<T> {
         })
     }
 
-    fn delete_at(&mut self, index: usize) -> Option<T> {
+    fn delete_at(&mut self, index: usize) -> Result<Option<T>, &str> {
         if index == 0 {
-            return self.pop();
+            return Ok(self.pop());
         }
         let mut target = &mut self.head;
         for _ in 0..index - 1 {
             if let Some(node) = target {
                 target = &mut node.next;
             } else {
-                panic!("Index out of bounds");
+                return Err("Index out of bounds");
             }
         }
         if let Some(node) = target.take() {
             *target = node.next;
             self.size -= 1;
-            Some(node.element)
+            Ok(Some(node.element))
         } else {
-            None
+            Ok(None)
         }
     }
 
