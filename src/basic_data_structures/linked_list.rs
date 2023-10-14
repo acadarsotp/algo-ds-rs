@@ -71,7 +71,7 @@ impl<T: PartialEq> List<T> {
             return Ok(self.pop());
         }
         let mut target = &mut self.head;
-        for _ in 0..index - 1 {
+        for _ in 0..index {
             if let Some(node) = target {
                 target = &mut node.next;
             } else {
@@ -217,8 +217,8 @@ mod tests {
         list.push(2);
         list.push(5);
 
-        assert_eq!(list.peek_mut(), Some(&mut 2));
-        assert_eq!(list.peek(), Some(&2));
+        assert_eq!(list.peek_mut(), Some(&mut 5));
+        assert_eq!(list.peek(), Some(&5));
     }
 
     #[test]
@@ -267,7 +267,7 @@ mod tests {
             counter += 1;
         }
 
-        assert_eq!(list_a.find(563), Some(vec![563]));
+        assert_eq!(list_a.find(563), Some(vec![1000-563]));
 
         let mut list_b: List<i32> = List::new();
         list_b.push(3);
@@ -275,7 +275,7 @@ mod tests {
         list_b.push(3);
         list_b.push(54);
 
-        assert_eq!(list_b.find(563), Some(vec![0,2]));
+        assert_eq!(list_b.find(3), Some(vec![1,3]));
     }
 
     #[test]
@@ -304,7 +304,7 @@ mod tests {
         list.push(5);
         list.push(10);
 
-        assert_eq!(list.into_iter().collect::<Vec<_>>(), vec![20, 10, 4]);
+        assert_eq!(list.into_iter().collect::<Vec<_>>(), vec![10, 5, 2]);
 
         //Panics because list is consumed by iterator
         //list.push(1);
