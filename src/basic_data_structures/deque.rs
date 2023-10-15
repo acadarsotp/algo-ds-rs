@@ -103,7 +103,7 @@ impl<T> Deque<T> {
 }
 
 // Implementation of 3 iterations
-struct IntoIter<T>(Deque<T>);
+pub struct IntoIter<T>(Deque<T>);
 impl<T: Clone> Iterator for IntoIter<T> {
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
@@ -115,7 +115,7 @@ impl<T: Clone> Iterator for IntoIter<T> {
     }
 }
 
-struct Iter<'a, T: 'a> {
+pub struct Iter<'a, T: 'a> {
     stack: Vec<&'a T>,
 }
 impl<'a, T> Iterator for Iter<'a, T> {
@@ -129,7 +129,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
     }
 }
 
-struct IterMut<'a, T: 'a> {
+pub struct IterMut<'a, T: 'a> {
     stack: Vec<&'a mut T>,
 }
 impl<'a, T> Iterator for IterMut<'a, T> {

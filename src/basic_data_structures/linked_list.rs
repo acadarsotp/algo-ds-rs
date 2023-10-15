@@ -73,7 +73,7 @@ impl<T: PartialEq> List<T> {
     }
 
     //Delete node from chosen index
-     pub fn delete_at(&mut self, index: usize) -> Result<Option<T>, &str> {
+    pub fn delete_at(&mut self, index: usize) -> Result<Option<T>, &str> {
         if index == 0 {
             return Ok(self.pop());
         }
@@ -142,7 +142,7 @@ impl<T: PartialEq> List<T> {
 }
 
 //Implementation of 3 iterators
-struct IntoIter<T>(List<T>);
+pub struct IntoIter<T>(List<T>);
 impl<T: PartialEq> Iterator for IntoIter<T> {
     type Item = T;
 
@@ -152,7 +152,7 @@ impl<T: PartialEq> Iterator for IntoIter<T> {
     }
 }
 
-struct Iter<'a, T: 'a> {
+pub struct Iter<'a, T: 'a> {
     next: Option<&'a Node<T>>,
 }
 impl<'a, T> Iterator for Iter<'a, T> {
@@ -166,7 +166,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
     }
 }
 
-struct IterMut<'a, T: 'a> {
+pub struct IterMut<'a, T: 'a> {
     next: Option<&'a mut Node<T>>,
 }
 impl<'a, T> Iterator for IterMut<'a, T> {
@@ -276,7 +276,7 @@ mod tests {
             counter += 1;
         }
 
-        assert_eq!(list_a.find(563), Some(vec![1000-563]));
+        assert_eq!(list_a.find(563), Some(vec![1000 - 563]));
 
         let mut list_b: List<i32> = List::new();
         list_b.push(3);
@@ -284,7 +284,7 @@ mod tests {
         list_b.push(3);
         list_b.push(54);
 
-        assert_eq!(list_b.find(3), Some(vec![1,3]));
+        assert_eq!(list_b.find(3), Some(vec![1, 3]));
     }
 
     #[test]
