@@ -17,7 +17,10 @@ pub fn sequential_search<T: PartialEq>(nums: &[T], target: T) -> Option<usize> {
     }
 }
 
-pub fn ordered_sequential_search<T: PartialEq + PartialOrd>(nums: &[T], target: T) -> Option<usize> {
+pub fn ordered_sequential_search<T: PartialEq + PartialOrd>(
+    nums: &[T],
+    target: T,
+) -> Option<usize> {
     let mut pos = 0;
     let mut found = false;
     let mut stop = false;
