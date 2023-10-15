@@ -43,6 +43,8 @@ pub fn binary_search_recursive<T: PartialEq + PartialOrd>(nums: &[T], target: T)
     }
 }
 
+//TODO missing interpolation and exponential implementations
+
 #[cfg(test)]
 mod tests {
     use super::*;
