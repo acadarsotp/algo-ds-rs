@@ -43,7 +43,26 @@ pub fn binary_search_recursive<T: PartialEq + PartialOrd>(nums: &[T], target: T)
     }
 }
 
-//TODO missing interpolation and exponential implementations
+pub fn binary_search_exponential<T: PartialEq + PartialOrd>(
+    nums: &[T],
+    target: T,
+) -> Option<usize> {
+    if nums.len() == 0 {
+        return None;
+    }
+
+    let mut high = 1;
+    while high < nums.len() && nums[high] < target {
+        high <<= 1;
+    }
+
+    let low = high >> 1;
+    let range = low..nums.len().min(high + 1);
+
+    binary_search_iterative(&nums[range], target).map(|index| index + low)
+}
+
+//TODO interpolation giving a lot of trouble when trying to implement it with generics
 
 #[cfg(test)]
 mod tests {
@@ -95,5 +114,29 @@ mod tests {
     fn test_binary_search_recursive_with_empty_collection() {
         let nums: Vec<i32> = Vec::new();
         assert_eq!(binary_search_iterative(&nums, 3), None);
+    }
+
+    #[test]
+    fn test_binary_search_exponential_with_integers() {
+        let nums = vec![1, 3, 5, 7, 9, 11, 13, 15];
+        assert_eq!(binary_search_exponential(&nums, 7), Some(3));
+        assert_eq!(binary_search_exponential(&nums, 1), Some(0));
+        assert_eq!(binary_search_exponential(&nums, 15), Some(7));
+        assert_eq!(binary_search_exponential(&nums, 6), None);
+    }
+
+    #[test]
+    fn test_binary_search_exponential_with_strings() {
+        let words = vec!["apple", "banana", "cherry", "date", "fig", "grape"];
+        assert_eq!(binary_search_exponential(&words, "cherry"), Some(2));
+        assert_eq!(binary_search_exponential(&words, "banana"), Some(1));
+        assert_eq!(binary_search_exponential(&words, "plum"), None);
+        assert_eq!(binary_search_exponential(&words, "kiwi"), None);
+    }
+
+    #[test]
+    fn test_binary_search_exponential_with_empty_collection() {
+        let nums: Vec<i32> = Vec::new();
+        assert_eq!(binary_search_exponential(&nums, 3), None);
     }
 }
