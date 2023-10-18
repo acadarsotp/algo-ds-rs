@@ -62,7 +62,7 @@ pub fn binary_search_exponential<T: PartialEq + PartialOrd>(
     binary_search_iterative(&nums[range], target).map(|index| index + low)
 }
 
-//TODO interpolation giving a lot of trouble when trying to implement it with generics
+//interpolation giving a lot of trouble when trying to implement it with generics
 
 #[cfg(test)]
 mod tests {
