@@ -1,4 +1,3 @@
-
 pub fn merge_sort<T: PartialOrd + Copy>(nums: &mut [T]) {
     if nums.len() > 1 {
         let mid = nums.len() >> 1;
@@ -8,7 +7,6 @@ pub fn merge_sort<T: PartialOrd + Copy>(nums: &mut [T]) {
         merge_sort(&mut nums[mid..]);
         // merge all
         merge(nums, mid);
-
     }
 }
 
@@ -90,4 +88,3 @@ mod tests {
         assert_eq!(nums, Vec::<i32>::new());
     }
 }
-

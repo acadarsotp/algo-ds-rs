@@ -1,23 +1,26 @@
 pub fn shell_sort<T: PartialOrd + Copy>(nums: &mut [T]) {
-    let mut gap = nums.len() / 2;
+    let len = nums.len();
+    let mut gap = len / 2;
+
     while gap > 0 {
         for start in 0..gap {
-            ist_sort(nums, start, gap);
+            insertion_sort_gap(nums, start, gap);
         }
 
         gap /= 2;
     }
 }
 
-fn ist_sort<T: PartialOrd + Copy>(nums: &mut [T], start: usize, gap: usize) {
+fn insertion_sort_gap<T: PartialOrd + Copy>(nums: &mut [T], start: usize, gap: usize) {
+    let len = nums.len();
     let mut i = start + gap;
 
-    while i < nums.len() {
+    while i < len {
+        let curr = nums[i];
         let mut pos = i;
-        let curr = nums[pos];
 
         while pos >= gap && curr < nums[pos - gap] {
-            nums[pos] = nums[pos - gap];
+            nums.swap(pos, pos - gap);
             pos -= gap;
         }
 

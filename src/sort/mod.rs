@@ -1,5 +1,6 @@
 pub mod bubble;
 pub mod insertion;
-pub mod quick;
-pub mod shell;
 pub mod merge;
+pub mod quick;
+pub mod selection;
+pub mod shell;
