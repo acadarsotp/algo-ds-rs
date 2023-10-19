@@ -126,7 +126,8 @@ impl<T: PartialEq> List<T> {
     }
 
     //Find element using iterator
-    //TODO Test performance against functions on search module
+    //TODO Test performance against functions on search moduleç
+    //Maybe this is not necessary, after all the library provides its own search functions
     pub fn find(&self, element: T) -> Option<Vec<usize>> {
         let found_indices: Vec<usize> = self
             .iter()
