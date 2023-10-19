@@ -1,45 +1,19 @@
-pub fn sequential_search<T: PartialEq>(nums: &[T], target: T) -> Option<usize> {
-    let mut pos = 0;
-    let mut found = false;
-
-    while pos < nums.len() && !found {
-        if nums[pos] == target {
-            found = true;
-        } else {
-            pos += 1;
-        }
-    }
-
-    if found {
-        Some(pos)
-    } else {
-        None
-    }
+pub fn sequential_search<T: PartialEq + Copy>(nums: &[T], target: T) -> Option<usize> {
+    nums.iter().position(|&x| x == target)
 }
 
-pub fn ordered_sequential_search<T: PartialEq + PartialOrd>(
+pub fn ordered_sequential_search<T: PartialEq + PartialOrd + Copy>(
     nums: &[T],
     target: T,
 ) -> Option<usize> {
-    let mut pos = 0;
-    let mut found = false;
-    let mut stop = false;
-
-    while pos < nums.len() && !found && !stop {
-        if nums[pos] == target {
-            found = true;
-        } else if nums[pos] > target {
-            stop = true
-        } else {
-            pos += 1;
+    nums.iter().enumerate().find_map(|(index, &x)| {
+        if x == target {
+            return Some(index);
+        } else if x > target {
+            return None;
         }
-    }
-
-    if found {
-        Some(pos)
-    } else {
         None
-    }
+    })
 }
 
 #[cfg(test)]
