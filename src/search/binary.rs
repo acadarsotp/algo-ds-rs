@@ -1,18 +1,16 @@
 pub fn binary_search_iterative<T: PartialEq + PartialOrd>(nums: &[T], target: T) -> Option<usize> {
-    if nums.len() == 0 {
+    if nums.is_empty() {
         return None;
     }
 
     let mut low = 0;
-    let mut mid = 0;
     let mut high = nums.len() - 1;
-    let mut found = false;
 
-    while low <= high && !found {
-        mid = (low + high) >> 1;
+    while low <= high {
+        let mid = (low + high) / 2;
 
         if target == nums[mid] {
-            found = true;
+            return Some(mid);
         } else if target < nums[mid] {
             high = mid - 1;
         } else {
@@ -20,19 +18,15 @@ pub fn binary_search_iterative<T: PartialEq + PartialOrd>(nums: &[T], target: T)
         }
     }
 
-    if found {
-        Some(mid)
-    } else {
-        None
-    }
+    None
 }
 
 pub fn binary_search_recursive<T: PartialEq + PartialOrd>(nums: &[T], target: T) -> Option<usize> {
-    if nums.len() == 0 {
+    if nums.is_empty() {
         return None;
     }
 
-    let mid = nums.len() >> 1;
+    let mid = nums.len() / 2;
 
     if target == nums[mid] {
         Some(mid)
@@ -47,16 +41,16 @@ pub fn binary_search_exponential<T: PartialEq + PartialOrd>(
     nums: &[T],
     target: T,
 ) -> Option<usize> {
-    if nums.len() == 0 {
+    if nums.is_empty() {
         return None;
     }
 
     let mut high = 1;
     while high < nums.len() && nums[high] < target {
-        high <<= 1;
+        high *= 2;
     }
 
-    let low = high >> 1;
+    let low = high / 2;
     let range = low..nums.len().min(high + 1);
 
     binary_search_iterative(&nums[range], target).map(|index| index + low)
