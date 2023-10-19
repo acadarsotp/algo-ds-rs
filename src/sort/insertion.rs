@@ -27,7 +27,6 @@ pub fn binary_insertion_sort<T: PartialOrd + Copy>(nums: &mut [T]) {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
