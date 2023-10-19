@@ -1,53 +1,32 @@
-pub fn insertion_sort<T: PartialOrd + Copy>(nums: &mut [T]) {
-    if nums.len() <= 1 {
-        return;
-    }
+pub fn insertion_sort<T: PartialOrd>(nums: &mut [T]) {
     for i in 1..nums.len() {
-        let mut pos = i;
-        let curr = nums[i];
-        while pos > 0 && curr < nums[pos - 1] {
-            // move element to right
-            nums[pos] = nums[pos - 1];
-            pos -= 1;
+        let mut j = i;
+        while j > 0 && nums[j] < nums[j - 1] {
+            nums.swap(j, j - 1);
+            j -= 1;
         }
-
-        // insert element: curr
-        nums[pos] = curr;
     }
 }
 
 pub fn binary_insertion_sort<T: PartialOrd + Copy>(nums: &mut [T]) {
-    let mut temp;
-    let mut left;
-    let mut mid;
-    let mut right;
-
     for i in 1..nums.len() {
-        left = 0;
-        right = i - 1;
-        temp = nums[i];
+        let mut left = 0;
+        let mut right = i;
+        let temp = nums[i];
 
-        while left <= right {
-            mid = (left + right) >> 1;
+        while left < right {
+            let mid = left + (right - left) / 2;
             if temp < nums[mid] {
-                if mid == 0 {
-                    break;
-                }
-                right = mid - 1;
+                right = mid;
             } else {
                 left = mid + 1;
             }
         }
 
-        for j in (left..i).rev() {
-            nums.swap(j, j + 1);
-        }
-
-        if left != i {
-            nums[left] = temp;
-        }
+        nums[left..=i].rotate_right(1);
     }
 }
+
 
 #[cfg(test)]
 mod tests {
