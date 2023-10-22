@@ -18,22 +18,24 @@ pub fn heap_sort<T: PartialOrd>(nums: &mut [T]) {
 
 fn sift_down<T: PartialOrd>(nums: &mut [T], mut parent: usize, max: usize) {
     loop {
-        let mut child = 2 * parent + 1;
+        let left_child = (parent << 1) + 1;
+        let right_child = left_child + 1;
+        let mut largest = parent;
 
-        if child >= max {
+        if left_child < max && nums[left_child] > nums[largest] {
+            largest = left_child;
+        }
+
+        if right_child < max && nums[right_child] > nums[largest] {
+            largest = right_child;
+        }
+
+        if largest == parent {
             break;
         }
 
-        if child + 1 < max && nums[child] < nums[child + 1] {
-            child += 1;
-        }
-
-        if nums[parent] >= nums[child] {
-            break;
-        }
-
-        nums.swap(parent, child);
-        parent = child;
+        nums.swap(parent, largest);
+        parent = largest;
     }
 }
 
